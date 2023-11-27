@@ -36,6 +36,6 @@
 - We use Junit4, Mockito, MockK...
 
 ## Preview
-![List Document](screenshots/docs_list.png "List Document")
-![View Document](screenshots/splash.png "View Document")
-![Sign](screenshots/sign.png "Sign")
+![List Document](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/docs_list.jpg "List Document")
+![View Document](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/docs_view.jpg "View Document")
+![Sign](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/sign.jpg "Sign")
