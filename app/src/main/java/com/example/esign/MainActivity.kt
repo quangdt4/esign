@@ -171,25 +171,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun copy(selectedFile: File, newFile: DocumentFile?) {
-        try {
-            val out = contentResolver.openOutputStream(newFile!!.uri)
-            val inputStream = FileInputStream(selectedFile.path)
-            val buffer = ByteArray(1024)
-            var read: Int
-            while (inputStream.read(buffer).also { read = it } != -1) {
-                out!!.write(buffer, 0, read)
-            }
-            inputStream.close()
-            out!!.flush()
-            out.close()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
     private fun handleExternalData() {
         val intent = intent
         val action = intent.action
