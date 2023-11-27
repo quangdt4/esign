@@ -36,6 +36,6 @@
 - We use Junit4, Mockito, MockK...
 
 ## Preview
-![List Document](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/docs_list.png "List Document")
-![View Document](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/docs_view.png "View Document")
-![Sign](/Users/quangdo2/Documents/other/esign/app/src/main/res/screenshot/sign.png "Sign")
+![docs_list](https://github.com/quangdt4/esign/assets/76697615/1b9e0b1a-3aaf-4991-a3e1-d9cc54211b5f)
+![docs_view](https://github.com/quangdt4/esign/assets/76697615/041a3687-b408-4d00-9cdf-7a1cc66015f4)
+![sign](https://github.com/quangdt4/esign/assets/76697615/f908e2dc-d268-4ea8-90ae-106fe80ce3a6)
