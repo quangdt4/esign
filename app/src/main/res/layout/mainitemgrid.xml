@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/d_16"
+    android:layout_marginTop="@dimen/d_8"
+    android:layout_marginEnd="@dimen/d_16"
+    app:cardCornerRadius="@dimen/d_8"
+    app:cardElevation="@dimen/d_4">
+
+    <LinearLayout
+        android:id="@+id/listItemLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/fileImageView"
+            android:layout_width="@dimen/d_48"
+            android:layout_height="@dimen/d_48"
+            android:layout_margin="@dimen/d_16"
+            android:gravity="center"
+            android:src="@drawable/ic_adobe" />
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:layout_marginEnd="@dimen/d_16"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fileItemTextview"
+                style="@style/Text16B"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/d_8"
+                android:ellipsize="end"
+                android:gravity="start|bottom"
+                android:lines="1"
+                android:text="Clean your room" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/dateItemTimeTextView"
+                style="@style/Text12B"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fileItemTextview"
+                android:gravity="start|center"
+                android:text="27 Sept 2015, 22:30" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/sizeItemTimeTextView"
+                style="@style/Text12B"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fileItemTextview"
+                android:gravity="end"
+                android:text="sample" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

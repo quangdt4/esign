@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/emerald"
+            android:theme="@style/Text16B" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/d_16"
+        app:menu_animationDelayPerItem="50"
+        app:menu_buttonSpacing="@dimen/d_2"
+        app:menu_colorNormal="@color/emerald"
+        app:menu_colorPressed="@color/emerald"
+        app:menu_colorRipple="@color/charcoalGrey_50"
+        app:menu_labels_colorRipple="@color/white"
+        app:menu_labels_position="left">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabMySign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/d_16"
+            android:src="@drawable/ic_edit"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/paleGrey"
+            app:fab_colorRipple="@color/white_ripple"
+            app:fab_label="@string/my_e_sign" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabDocs"
+            style="@style/Text16W"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/d_16"
+            android:src="@drawable/ic_insert_drive_file_black_24dp"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/paleGrey"
+            app:fab_colorRipple="@color/white_ripple"
+            app:fab_label="@string/new_docs" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/d_16"
+    android:layout_marginTop="@dimen/d_8"
+    android:layout_marginEnd="@dimen/d_16"
+    android:elevation="@dimen/d_4"
+    app:cardCornerRadius="@dimen/d_8">
+
+    <FrameLayout
+        android:id="@+id/freehanditem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.benzveen.pdfdigitalsignature.Signature.SignatureView
+            android:id="@+id/signatureview"
+            android:layout_width="@dimen/d_56"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+
+        </com.benzveen.pdfdigitalsignature.Signature.SignatureView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvName"
+            style="@style/Text16B"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="@dimen/d_64"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/deleteSignature"
+            android:layout_width="@dimen/d_32"
+            android:layout_height="@dimen/d_32"
+            android:layout_gravity="end|center_vertical"
+            android:layout_margin="@dimen/d_16"
+            android:background="@drawable/ic_delete_black_24dp"
+            android:backgroundTint="@color/OrangeSoda" />
+    </FrameLayout>
+
+
+</androidx.cardview.widget.CardView>

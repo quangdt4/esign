@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">eSign</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">PDF Digital Signature</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">My Documents</string>
+    <string name="menu_signature">Signatures</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="signature_title">Place Signature</string>
+    <string name="action_save">Done</string>
+    <string name="clear">Clear</string>
+    '
+    <string name="display_name">eSign</string>
+    <string name="new_e_sign">Create eSign</string>
+    <string name="my_e_sign">My eSign</string>
+    <string name="new_docs">Import new document</string>
+    <string name="feed">Feed</string>
+    <string name="search">Search</string>
+    <string name="live">Live</string>
+    <string name="profile">Profile</string>
+    <string name="create">Create</string>
+    <string name="full_name">Full name</string>
+    <string name="new_name">New name</string>
+    <string name="delete">Delete</string>
+    <string name="phone">Phone</string>
+    <string name="empty_sign">No Signatures Available \nTap to create!</string>
+    <string name="empty_docs">No Document Available!</string>
+
+    <string name="open_file">Open file</string>
+    <string name="share">Share</string>
+    <string name="rename">Rename</string>
+    <string name="save_to">Save to</string>
+</resources>

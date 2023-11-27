@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".signature.SignatureActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create_signature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+
+    <LinearLayout
+        android:id="@+id/toDoEmptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Text16B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:text="No Signatures Available" />
+
+            <TextView
+                style="@style/Text12B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:text="Create a new Signature" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.example.esign.utils.RecyclerViewEmptySupport
+        android:id="@+id/mainRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

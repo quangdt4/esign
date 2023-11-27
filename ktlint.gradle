@@ -1,0 +1,27 @@
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.pinterest:ktlint:0.37.2"
+}
+
+tasks.register('ktlint', JavaExec) {
+    group = "verification"
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "--android", "src/**/*.kt"
+}
+
+tasks.register('check') {
+    dependsOn 'ktlint'
+}
+
+tasks.register('ktlintFormat', JavaExec) {
+    group = "formatting"
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "--android", "-F", "src/**/*.kt"
+}
