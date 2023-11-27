@@ -2,9 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_sign"
-        android:icon="@drawable/ic_sigining"
+        android:id="@+id/action_verify"
+        android:icon="@drawable/ic_verify"
         android:orderInCategory="100"
+        android:title="Sign PDF"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_sign"
+        android:icon="@drawable/ic_edit"
+        android:orderInCategory="100"
+        android:iconTint="@color/white"
         android:title="Sign PDF"
         app:showAsAction="ifRoom" />
 
@@ -13,6 +21,6 @@
         android:enabled="false"
         android:icon="@drawable/ic_save_black_24dp"
         android:orderInCategory="100"
-        android:title="Save PDF"
+        android:title="Save"
         app:showAsAction="ifRoom" />
 </menu>

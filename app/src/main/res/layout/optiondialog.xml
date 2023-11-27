@@ -5,14 +5,14 @@
 
     <Button
         android:id="@+id/fromCollection"
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/manrope_medium"
         android:text="From Signature Collection"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
         android:textAllCaps="false"
-        android:textColor="@color/grey_10"
+        android:textColor="@color/raisin_black"
         android:textAlignment="textStart"/>
 
 
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         style="?android:attr/borderlessButtonStyle"
         android:textAlignment="textStart"
+        android:visibility="gone"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
         android:textColor="@color/grey_10"
