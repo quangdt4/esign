@@ -3,6 +3,7 @@ package com.example.esign
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -24,16 +25,17 @@ import androidx.core.view.GravityCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.esign.pki.VerificationAuthorityUtil.verifySignature
 import com.example.esign.signature.SignatureActivity
 import com.example.esign.utils.CommonUtils.showToast
 import com.example.esign.utils.RecyclerViewEmptySupport
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
@@ -71,18 +73,7 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             if (result != null) {
                 val uriTree = result.data?.data
-                val documentFile = DocumentFile.fromTreeUri(this, uriTree!!)
-                if (selectedFile != null) {
-                    val newFile = documentFile!!.createFile("application/pdf", selectedFile!!.name)
-                    try {
-                        copy(selectedFile!!, newFile)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                    selectedFile = null
-                    if (mBottomSheetDialog != null) mBottomSheetDialog!!.dismiss()
-                    showToast("Copy files to: " + documentFile.name, applicationContext)
-                }
+                uriTree?.let { copyFileToExternalStorage(it) }
             }
         }
     }
@@ -104,6 +95,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUp() {
+        PDFBoxResourceLoader.init(applicationContext)
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val fabDocs = findViewById<FloatingActionButton>(R.id.fabDocs)
         val fabMySign = findViewById<FloatingActionButton>(R.id.fabMySign)
@@ -163,8 +156,22 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    @Throws(IOException::class)
-    fun copy(selectedFile: File, newFile: DocumentFile?) {
+    private fun copyFileToExternalStorage(uri: Uri) {
+        try {
+            contentResolver.openFileDescriptor(uri, "w")?.use {
+                FileOutputStream(it.fileDescriptor).use { os ->
+                    os.write(
+                        selectedFile!!.readBytes()
+                    )
+                }
+            }
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun copy(selectedFile: File, newFile: DocumentFile?) {
         try {
             val out = contentResolver.openOutputStream(newFile!!.uri)
             val inputStream = FileInputStream(selectedFile.path)
@@ -190,9 +197,10 @@ class MainActivity : AppCompatActivity() {
         var imageUri: Uri? = null
         if ((Intent.ACTION_SEND == action || Intent.ACTION_VIEW == action) && type != null) {
             if ("application/pdf" == type) {
-                if (Intent.ACTION_SEND == action) imageUri =
-                    intent.getParcelableExtra(Intent.EXTRA_STREAM) else if (Intent.ACTION_VIEW == action) imageUri =
-                    intent.data
+                if (Intent.ACTION_SEND == action)
+                    imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                else if (Intent.ACTION_VIEW == action)
+                    imageUri = intent.data
                 if (imageUri != null) {
                     val list = ArrayList<Uri>()
                     list.add(imageUri)
@@ -312,11 +320,28 @@ class MainActivity : AppCompatActivity() {
             showCustomDeleteDialog(currentFile)
         }
         view.findViewById<View>(R.id.lyt_copyTo).setOnClickListener {
+            dismiss()
             copyTo(currentFile)
         }
         view.findViewById<View>(R.id.lyt_openFile).setOnClickListener {
             dismiss()
-            verifySignature(applicationContext, currentFile, contentResolver)
+            openFile(currentFile)
+        }
+    }
+
+    private fun openFile(currentFile: File) {
+        val target = Intent(Intent.ACTION_VIEW)
+        val contentUri = FileProvider.getUriForFile(
+            applicationContext, applicationContext.packageName + ".provider", currentFile
+        )
+        target.setDataAndType(contentUri, "application/pdf")
+        target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        val intent = Intent.createChooser(target, "Open File")
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            showToast("Open file fail", this)
         }
     }
 
@@ -337,8 +362,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun copyTo(currentFile: File) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_TITLE, ".pdf")
+        }
         startDocumentTreeForResult.launch(intent)
         selectedFile = currentFile
     }

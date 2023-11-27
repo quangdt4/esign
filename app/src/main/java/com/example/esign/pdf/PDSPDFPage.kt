@@ -1,12 +1,16 @@
 package com.example.esign.pdf
 
-import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.RectF
-import android.graphics.pdf.PdfRenderer
 import android.util.SizeF
-import com.example.esign.pds.page.PDSPageViewer
 import com.example.esign.pds.model.PDSElement
+import com.example.esign.pds.page.PDSPageViewer
+import com.tom_roush.pdfbox.pdmodel.PDPage
+import com.tom_roush.pdfbox.rendering.PDFRenderer
 
 class PDSPDFPage(val number: Int, val document: PDSPDFDocument) {
     private val elements: ArrayList<PDSElement> = arrayListOf()
@@ -19,26 +23,43 @@ class PDSPDFPage(val number: Int, val document: PDSPDFDocument) {
             if (mPageSize == null) {
                 synchronized(PDSPDFDocument.lockObject) {
                     synchronized(document) {
-                        val openPage = document.renderer?.openPage(
-                            number
-                        )
-                        mPageSize = SizeF(openPage?.width!!.toFloat(), openPage.height.toFloat())
-                        openPage.close()
+                        val page = document.renderer!!.getPage(number)
+                        if (page.mediaBox.width > page.mediaBox.height) {
+                            mPageSize = SizeF(page.mediaBox.height, page.mediaBox.width)
+                        } else if (page.mediaBox.width < page.mediaBox.height) {
+                            mPageSize = SizeF(page.mediaBox.width, page.mediaBox.height)
+                        }
                     }
                 }
             }
             return mPageSize
         }
 
-    fun renderPage(context: Context?, bitmap: Bitmap?, z: Boolean, z2: Boolean) {
+    fun renderPage(bitmap: Bitmap?, z: Boolean, z2: Boolean) {
         val i = if (z2) 2 else 1
         synchronized(PDSPDFDocument.lockObject) {
             synchronized(document) {
-                val openPage: PdfRenderer.Page =
-                    (document as PDSPDFDocument).renderer!!.openPage(number)
-                mPageSize = SizeF(openPage.width.toFloat(), openPage.height.toFloat())
-                openPage.render(bitmap!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                openPage.close()
+                val openPage: PDPage =
+                    document.renderer!!.getPage(number)
+                if (openPage.mediaBox.width > openPage.mediaBox.height) {
+                    mPageSize = SizeF(openPage.mediaBox.height, openPage.mediaBox.width)
+                } else if (openPage.mediaBox.width < openPage.mediaBox.height) {
+                    mPageSize = SizeF(openPage.mediaBox.width, openPage.mediaBox.height)
+                }
+
+
+                val render = PDFRenderer(document.renderer)
+                val canvas = Canvas(bitmap!!)
+                val paint = Paint()
+                paint.color = Color.WHITE
+                paint.style = Paint.Style.FILL
+
+                val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+                val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+
+                canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), paint)
+                render.renderPageToGraphics(number, paint, canvas)
+
             }
         }
     }

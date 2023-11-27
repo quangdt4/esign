@@ -40,36 +40,41 @@ class PDSRenderPageAsyncTask internal constructor(
 
     /* Access modifiers changed, original: protected|varargs */
     override fun doInBackground(vararg p0: Void?): Bitmap? {
-        if (isCancelled || mImageViewSize!!.getWidth() <= 0.0f) {
+        if (isCancelled || mImageViewSize!!.width <= 0.0f) {
             return null
         }
         mBitmapSize = computePageBitmapSize()
         if (isCancelled) {
             return null
         }
-        var width: Float = mBitmapSize!!.getWidth() * scale
-        var height: Float = mBitmapSize!!.getHeight() * scale
+        var width: Float = mBitmapSize!!.width * scale - 500.0f
+        var height: Float = mBitmapSize!!.height * scale - 500.0f
         val f = width / height
-        if (width > 3072.0f && width > height) {
-            height = 3072.0f / f
-            width = 3072.0f
-        } else if (height > 3072.0f && height > width) {
-            width = f * 3072.0f
-            height = 3072.0f
+        if (width > 2000.0f && width > height) {
+            height = 2000.0f / f
+            width = 2000.0f
+        } else if (height > 2000.0f && height > width) {
+            width = f * 2000.0f
+            height = 2000.0f
         }
+        if (width > height) {
+            var temp = width
+            width = height
+            height = temp
+        }
+
         return try {
-            val createBitmap =
+            var createBitmap =
                 Bitmap.createBitmap(Math.round(width), Math.round(height), Bitmap.Config.ARGB_8888)
             if (isCancelled) {
                 return null
             }
             createBitmap.setHasAlpha(false)
-            createBitmap.eraseColor(-1)
             if (isCancelled) {
                 createBitmap.recycle()
                 return null
             }
-            mPage.renderPage(mContext, createBitmap, mIncludePageElements, mForPrint)
+            mPage.renderPage(createBitmap, mIncludePageElements, mForPrint)
             if (!isCancelled) {
                 return createBitmap
             }
@@ -101,18 +106,18 @@ class PDSRenderPageAsyncTask internal constructor(
 
     private fun computePageBitmapSize(): SizeF {
         var width: Float
-        val pageSize: SizeF = mPage!!.pageSize!!
-        var width2: Float = pageSize.getWidth() / pageSize.getHeight()
-        if (width2 > mImageViewSize!!.getWidth() / mImageViewSize!!.getHeight()) {
-            width = mImageViewSize!!.getWidth()
-            if (width > 3072.0f) {
-                width = 3072.0f
+        val pageSize: SizeF = mPage.pageSize!!
+        var width2: Float = pageSize.width / pageSize.height
+        if (width2 > mImageViewSize!!.width / mImageViewSize!!.height) {
+            width = mImageViewSize!!.width
+            if (width > 2000.0f) {
+                width = 2000.0f
             }
             width2 = Math.round(width / width2).toFloat()
         } else {
-            width = mImageViewSize!!.getHeight()
-            if (width > 3072.0f) {
-                width = 3072.0f
+            width = mImageViewSize!!.height
+            if (width > 2000.0f) {
+                width = 2000.0f
             }
             val f = width2 * width
             width2 = width

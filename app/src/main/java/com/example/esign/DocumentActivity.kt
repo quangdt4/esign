@@ -35,6 +35,7 @@ import com.example.esign.pds.model.PDSElement
 import com.example.esign.pds.page.PDSPageViewer
 import com.example.esign.pds.page.PDSViewPager
 import com.example.esign.pki.SaveAsPDFWithCoroutine
+import com.example.esign.pki.VerificationAuthorityUtil.verifySignature
 import com.example.esign.signature.SignatureActivity
 import com.example.esign.utils.CommonUtils.showToast
 import java.io.File
@@ -42,6 +43,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.security.KeyStore
 import java.security.Security
+import java.security.cert.X509Certificate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,6 +54,7 @@ class DocumentActivity : AppCompatActivity() {
 
     private var pdfData: Uri? = null
     private var digitalID: Uri? = null
+    var newPdfData: Uri? = null
 
     private var mViewPager: PDSViewPager? = null
     private var imageAdapter: PDSPageAdapter? = null
@@ -125,8 +128,45 @@ class DocumentActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_sign -> showSignatureOptionsDialog()
             R.id.action_save -> savePDFDocument()
+            R.id.action_verify -> verify()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun verify() {
+        if (pdfData != null) {
+            verifySignature(contentResolver, pdfData!!, onVerified = { verify, cert ->
+                if (verify && cert != null) {
+                    showVerifyDialog(cert)
+                } else {
+                    showToast("Verify fail!", this)
+                }
+            })
+        } else if (newPdfData != null) {
+            verifySignature(contentResolver, newPdfData!!, onVerified = { verify, cert ->
+                if (verify && cert != null) {
+                    showVerifyDialog(cert)
+                } else {
+                    showToast("Verify fail!", this)
+                }
+            })
+        }
+    }
+
+    private fun showVerifyDialog(cer: X509Certificate) {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Verify signature")
+        alertDialog.setCancelable(true)
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEUTRAL, "Close"
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.setMessage(
+            "Serial Number: ${cer.serialNumber}\n" + "IssuerDN: ${cer.issuerDN}]\n" + "Signature: ${cer.signature}"
+        )
+
+        alertDialog.show()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -145,6 +185,7 @@ class DocumentActivity : AppCompatActivity() {
 
     private fun openPDF(pdfData: Uri?) {
         try {
+            newPdfData = pdfData
             val document = PDSPDFDocument(this, pdfData)
             document.open()
             mDocument = document
@@ -177,17 +218,14 @@ class DocumentActivity : AppCompatActivity() {
 
     private fun getPassword() {
         val dialogView = layoutInflater.inflate(R.layout.passworddialog, null)
-        passwordAlertDialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .apply {
+        passwordAlertDialog = AlertDialog.Builder(this).setView(dialogView).apply {
                 val password: EditText = dialogView.findViewById(R.id.passwordText)
                 val submit = dialogView.findViewById<Button>(R.id.passwordSubmit)
                 submit.setOnClickListener {
                     Log.i("quangdo", "...on Submit getPassword")
                     handlePasswordSubmission(password)
                 }
-            }
-            .create()
+            }.create()
         passwordAlertDialog?.show()
     }
 
@@ -303,9 +341,7 @@ class DocumentActivity : AppCompatActivity() {
             val fileName: String = edittext.text.toString()
             if (fileName.isBlank()) {
                 Toast.makeText(
-                    this@DocumentActivity,
-                    "File name should not be empty",
-                    Toast.LENGTH_LONG
+                    this@DocumentActivity, "File name should not be empty", Toast.LENGTH_LONG
                 ).show()
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -324,16 +360,13 @@ class DocumentActivity : AppCompatActivity() {
      * Handle dialog
      */
     private fun showSaveChangesDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Save Document")
+        AlertDialog.Builder(this).setTitle("Save Document")
             .setMessage("Want to save your changes to the PDF document?")
             .setPositiveButton("Save") { _, _ ->
                 savePDFDocument()
-            }
-            .setNegativeButton("Exit") { _, _ ->
+            }.setNegativeButton("Exit") { _, _ ->
                 finish()
-            }
-            .show()
+            }.show()
     }
 
     private fun showSignatureOptionsDialog() {
@@ -346,8 +379,7 @@ class DocumentActivity : AppCompatActivity() {
         signature.setOnClickListener {
             startSignatureForResult.launch(
                 Intent(
-                    applicationContext,
-                    SignatureActivity::class.java
+                    applicationContext, SignatureActivity::class.java
                 )
             )
             signatureOptionDialog?.dismiss()
@@ -370,10 +402,7 @@ class DocumentActivity : AppCompatActivity() {
      * Add Element
      */
     private fun addElementFile(
-        fASElementType: PDSElement.PDSElementType,
-        file: File?,
-        f: Float,
-        f2: Float
+        fASElementType: PDSElement.PDSElementType, file: File?, f: Float, f2: Float
     ) {
         val focusedChild: View = mViewPager!!.focusedChild
         val fASPageViewer: PDSPageViewer =
@@ -398,8 +427,7 @@ class DocumentActivity : AppCompatActivity() {
                     val mimetypes = arrayOf("application/x-pkcs12")
                     intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
                     startDigitalIdForResult.launch(intent)
-                }
-                .setNegativeButton(
+                }.setNegativeButton(
                     "No"
                 ) { dialog, _ -> dialog.dismiss() }
             dialog = builder.create()
@@ -409,10 +437,7 @@ class DocumentActivity : AppCompatActivity() {
     }
 
     private fun addElementBitmap(
-        fASElementType: PDSElement.PDSElementType,
-        bitmap: Bitmap?,
-        f: Float,
-        f2: Float
+        fASElementType: PDSElement.PDSElementType, bitmap: Bitmap?, f: Float, f2: Float
     ) {
         val focusedChild: View = mViewPager!!.focusedChild
         if (bitmap != null) {
@@ -440,8 +465,7 @@ class DocumentActivity : AppCompatActivity() {
                         val mimetypes = arrayOf("application/x-pkcs12")
                         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
                         startDigitalIdForResult.launch(intent)
-                    }
-                    .setNegativeButton(
+                    }.setNegativeButton(
                         "No"
                     ) { dialog, _ -> dialog.dismiss() }
                 dialog = builder.create()
