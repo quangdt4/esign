@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         style="?android:attr/borderlessButtonStyle"
         android:textAlignment="textStart"
+        android:visibility="gone"
         android:textAllCaps="false"
         android:textColor="@color/raisin_black"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
