@@ -2,7 +2,6 @@ package com.example.esign.signature
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -17,21 +16,23 @@ import java.io.File
 import java.util.Arrays
 
 class SignatureActivity : AppCompatActivity() {
+
     private var mRecyclerView: RecyclerViewEmptySupport? = null
     var items: MutableList<File>? = null
     var message: String? = null
     private var mAdapter: SignatureAdapter? = null
-    protected override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signature)
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
-        val fab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.create_signature)
-        fab.setOnClickListener(View.OnClickListener {
-            val intent = Intent(getApplicationContext(), FreeHandActivity::class.java)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        val fab: FloatingActionButton = findViewById(R.id.create_signature)
+        fab.setOnClickListener {
+            val intent = Intent(applicationContext, FreeHandActivity::class.java)
             startActivityForResult(intent, FREEHAND_Request_CODE)
-        })
-        InitRecycleViewer()
-        val intent: Intent = getIntent()
+        }
+        initRecycleViewer()
+        val intent: Intent = intent
         message = intent.getStringExtra("ActivityAction")
     }
 
@@ -40,51 +41,55 @@ class SignatureActivity : AppCompatActivity() {
         return true
     }
 
-    private fun InitRecycleViewer() {
+    private fun initRecycleViewer() {
         mRecyclerView = findViewById(R.id.mainRecycleView)
         mRecyclerView!!.setEmptyView(findViewById(R.id.toDoEmptyView))
         mRecyclerView!!.setHasFixedSize(true)
-        mRecyclerView!!.setItemAnimator(DefaultItemAnimator())
-        mRecyclerView!!.setLayoutManager(LinearLayoutManager(this))
-        CreateDataSource()
+        mRecyclerView!!.itemAnimator = DefaultItemAnimator()
+        mRecyclerView!!.layoutManager = LinearLayoutManager(this)
+        createDataSource()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         super.onActivityResult(requestCode, resultCode, result)
         if (requestCode == FREEHAND_Request_CODE && resultCode == RESULT_OK) {
             if (result != null) {
-                CreateDataSource()
+                createDataSource()
                 mAdapter!!.notifyItemInserted(items!!.size - 1)
             }
         }
     }
 
-    private fun CreateDataSource() {
+    private fun createDataSource() {
         items = ArrayList()
-        val root: File = getFilesDir()
+        val root: File = filesDir
         val myDir = File("$root/FreeHand")
         if (!myDir.exists()) {
             myDir.mkdirs()
         }
         val files = myDir.listFiles()
-        Arrays.sort(files) { file1, file2 ->
-            val result = file2.lastModified() - file1.lastModified()
-            if (result < 0) {
-                -1
-            } else if (result > 0) {
-                1
-            } else {
-                0
+        if (files != null) {
+            Arrays.sort(files) { file1, file2 ->
+                val result = file2.lastModified() - file1.lastModified()
+                if (result < 0) {
+                    -1
+                } else if (result > 0) {
+                    1
+                } else {
+                    0
+                }
             }
         }
-        for (i in files.indices) {
-            items!!.add(files[i])
+        if (files != null) {
+            for (i in files.indices) {
+                items!!.add(files[i])
+            }
         }
 
         //set data and list adapter
         mAdapter = SignatureAdapter(items!!)
         mAdapter!!.setOnItemClickListener(object : SignatureAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: File?, position: Int) {
+            override fun onItemClick(view: View?, obj: File?, pos: Int) {
                 if (message == null) {
                     val resultIntent = Intent()
                     resultIntent.putExtra("FileName", obj!!.path)
@@ -97,25 +102,21 @@ class SignatureActivity : AppCompatActivity() {
                 val dialog: AlertDialog
                 val builder = AlertDialog.Builder(this@SignatureActivity)
                 builder.setMessage("Are you sure you want to delete this Signature?")
-                    .setPositiveButton("Delete", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, id: Int) {
-                            if (obj!!.exists()) {
-                                obj.delete()
-                            }
-                            CreateDataSource()
-                            mAdapter!!.notifyItemInserted(items!!.size - 1)
+                    .setPositiveButton("Delete"
+                    ) { _, _ ->
+                        if (obj!!.exists()) {
+                            obj.delete()
                         }
-                    })
-                    .setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, id: Int) {
-                            dialog.dismiss()
-                        }
-                    })
+                        createDataSource()
+                        mAdapter!!.notifyItemInserted(items!!.size - 1)
+                    }
+                    .setNegativeButton("Cancel"
+                    ) { dialog, _ -> dialog.dismiss() }
                 dialog = builder.create()
                 dialog.show()
             }
         })
-        mRecyclerView!!.setAdapter(mAdapter)
+        mRecyclerView!!.adapter = mAdapter
     }
 
     companion object {

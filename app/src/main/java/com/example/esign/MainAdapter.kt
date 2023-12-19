@@ -41,11 +41,11 @@ class MainAdapter(private val ctx: Context, var items: List<File>) :
         var lyt_parent: View
 
         init {
-            image = v.findViewById<ImageView>(R.id.fileImageView)
-            name = v.findViewById<TextView>(R.id.fileItemTextview)
-            brief = v.findViewById<TextView>(R.id.dateItemTimeTextView)
-            size = v.findViewById<TextView>(R.id.sizeItemTimeTextView)
-            lyt_parent = v.findViewById<View>(R.id.listItemLinearLayout)
+            image = v.findViewById(R.id.fileImageView)
+            name = v.findViewById(R.id.fileItemTextview)
+            brief = v.findViewById(R.id.dateItemTimeTextView)
+            size = v.findViewById(R.id.sizeItemTimeTextView)
+            lyt_parent = v.findViewById(R.id.listItemLinearLayout)
         }
     }
 

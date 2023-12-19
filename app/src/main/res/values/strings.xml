@@ -33,10 +33,10 @@
     <string name="phone">Phone</string>
     <string name="empty_sign">No Signatures Available \nTap to create!</string>
     <string name="empty_docs">No Document Available!</string>
-
     <string name="open_file">Open file</string>
     <string name="share">Share</string>
     <string name="rename">Rename</string>
+    <string name="verify">Verify</string>
     <string name="save_to">Save to</string>
     <string name="pass">Certificate Password</string>
 </resources>

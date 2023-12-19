@@ -38,6 +38,8 @@ import com.example.esign.pki.SaveAsPDFWithCoroutine
 import com.example.esign.pki.VerificationAuthorityUtil.verifySignature
 import com.example.esign.signature.SignatureActivity
 import com.example.esign.utils.CommonUtils.showToast
+import com.github.clans.fab.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -92,8 +94,12 @@ class DocumentActivity : AppCompatActivity() {
         mViewPager = findViewById(R.id.viewpager)
         savingProgress = findViewById(R.id.savingProgress)
 
-//        val ab: ActionBar = supportActionBar!!
-//        ab.setDisplayHomeAsUpEnabled(true)
+        val fabVerify: ExtendedFloatingActionButton = findViewById(R.id.fabVerify)
+        fabVerify.setOnClickListener {
+            verify()
+        }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val message: String? = intent.getStringExtra(ACTION)
 
@@ -128,7 +134,6 @@ class DocumentActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_sign -> showSignatureOptionsDialog()
             R.id.action_save -> savePDFDocument()
-            R.id.action_verify -> verify()
         }
         return super.onOptionsItemSelected(item)
     }

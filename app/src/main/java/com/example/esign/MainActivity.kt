@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
-import androidx.documentfile.provider.DocumentFile
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.esign.signature.SignatureActivity
@@ -33,8 +32,6 @@ import com.github.clans.fab.FloatingActionMenu
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*

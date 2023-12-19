@@ -2,7 +2,6 @@ package com.example.esign.signature
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -20,14 +19,16 @@ class FreeHandActivity : AppCompatActivity() {
     private var signatureView: SignatureView? = null
     private var inkWidth: SeekBar? = null
     private var menu: Menu? = null
-    var saveItem: MenuItem? = null
-    protected override fun onCreate(savedInstanceState: Bundle?) {
+    private var saveItem: MenuItem? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_free_hand)
-//        val ab: ActionBar = getSupportActionBar()!!
-//        ab.setDisplayHomeAsUpEnabled(true)
-        signatureView = findViewById<SignatureView>(R.id.inkSignatureOverlayView)
-        inkWidth = findViewById<SeekBar>(R.id.seekBar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        signatureView = findViewById(R.id.inkSignatureOverlayView)
+        inkWidth = findViewById(R.id.seekBar)
         inkWidth!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 signatureView!!.strokeWidth = (progress.toFloat())
@@ -36,16 +37,15 @@ class FreeHandActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
-        findViewById<View>(R.id.action_clear).setOnClickListener(View.OnClickListener {
+        findViewById<View>(R.id.action_clear).setOnClickListener {
             clearSignature()
             enableClear(false)
             enableSave(false)
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.freehandmenu, menu)
+        menuInflater.inflate(R.menu.freehandmenu, menu)
         this.menu = menu
         saveItem = menu.findItem(R.id.signature_save)
         saveItem!!.isEnabled = false
@@ -59,7 +59,7 @@ class FreeHandActivity : AppCompatActivity() {
             saveFreeHand()
             val data = Intent()
             val text = "Result OK"
-            data.setAction(text)
+            data.action = text
             setResult(Activity.RESULT_OK, data)
             finish()
         }
@@ -72,8 +72,7 @@ class FreeHandActivity : AppCompatActivity() {
     }
 
     fun onRadioButtonClicked(view: View) {
-        // Is the button now checked?
-        val checked: Boolean = (view as RadioButton).isChecked()
+        val checked: Boolean = (view as RadioButton).isChecked
         when (view.id) {
             R.id.radioBlack -> if (checked) {
                 signatureView!!.setStrokeColor(
@@ -107,22 +106,18 @@ class FreeHandActivity : AppCompatActivity() {
         }
     }
 
-    override fun onConfigurationChanged(configuration: Configuration) {
-        super.onConfigurationChanged(configuration)
-    }
-
-    fun clearSignature() {
+    private fun clearSignature() {
         signatureView!!.clear()
         signatureView!!.setEditable(true)
     }
 
     fun enableClear(z: Boolean) {
         val button: ImageButton = findViewById<ImageButton>(R.id.action_clear)
-        button.setEnabled(z)
+        button.isEnabled = z
         if (z) {
-            button.setAlpha(1.0f)
+            button.alpha = 1.0f
         } else {
-            button.setAlpha(0.5f)
+            button.alpha = 0.5f
         }
     }
 
@@ -135,13 +130,13 @@ class FreeHandActivity : AppCompatActivity() {
         saveItem!!.isEnabled = z
     }
 
-    fun saveFreeHand() {
+    private fun saveFreeHand() {
         val localSignatureView: SignatureView =
-            findViewById<SignatureView>(R.id.inkSignatureOverlayView)
+            findViewById(R.id.inkSignatureOverlayView)
         val localArrayList: ArrayList<*>? = localSignatureView.mInkList
         if (localArrayList != null && localArrayList.size > 0) {
             isFreeHandCreated = true
         }
-        SignatureUtils.saveSignature(getApplicationContext(), localSignatureView)
+        SignatureUtils.saveSignature(applicationContext, localSignatureView)
     }
 }
