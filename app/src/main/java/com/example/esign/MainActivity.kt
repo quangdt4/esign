@@ -11,9 +11,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -24,12 +27,16 @@ import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.esign.pin.PINActivity
 import com.example.esign.signature.SignatureActivity
+import com.example.esign.utils.CommonUtils.getPIN
+import com.example.esign.utils.CommonUtils.isPinSetup
 import com.example.esign.utils.CommonUtils.showToast
 import com.example.esign.utils.RecyclerViewEmptySupport
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import java.io.File
 import java.io.FileOutputStream
@@ -46,8 +53,9 @@ class MainActivity : AppCompatActivity() {
     private var selectedFile: File? = null
     private val mHandler = Handler(Looper.getMainLooper())
     private var fabMenu: FloatingActionMenu? = null
+    private var pinDialog: AlertDialog? = null
 
-    private val mUpdateTimeTask = Runnable {
+    private val signatureIntentRunnable = Runnable {
         val intent = Intent(applicationContext, SignatureActivity::class.java)
         intent.putExtra("ActivityAction", "Open")
         startActivity(intent)
@@ -79,7 +87,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setUp()
-
+        if (isPinSetup(this)) {
+            requestPIN()
+        }
         checkStoragePermission()
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -97,6 +107,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val fabDocs = findViewById<FloatingActionButton>(R.id.fabDocs)
         val fabMySign = findViewById<FloatingActionButton>(R.id.fabMySign)
+        val fabPIN = findViewById<FloatingActionButton>(R.id.fabPIN)
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
 
@@ -116,7 +127,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabMySign.setOnClickListener {
-            mHandler.postDelayed(mUpdateTimeTask, 100)
+            mHandler.postDelayed(signatureIntentRunnable, 100)
+        }
+
+        fabPIN.setOnClickListener {
+            val intent = Intent(applicationContext, PINActivity::class.java)
+            startActivity(intent)
         }
 
         setSupportActionBar(toolbar)
@@ -153,6 +169,29 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    private fun requestPIN() {
+        val context = this
+        val dialogView = layoutInflater.inflate(R.layout.pindialog, null)
+        pinDialog = AlertDialog.Builder(context).setView(dialogView).apply {
+            val pin: TextInputEditText = dialogView.findViewById(R.id.edtPin)
+            val submit = dialogView.findViewById<Button>(R.id.pinSubmit)
+            val cancel = dialogView.findViewById<ImageView>(R.id.ivCancel)
+            submit.setOnClickListener {
+                if (pin.text.toString() == getPIN(context)) {
+                    showToast("PIN Success", context)
+                    pinDialog!!.dismiss()
+                } else {
+                    showToast("Wrong PIN", context)
+                }
+            }
+            cancel.setOnClickListener {
+                finish()
+            }
+        }.create()
+        pinDialog?.setCanceledOnTouchOutside(false)
+        pinDialog?.show()
+    }
+
     private fun copyFileToExternalStorage(uri: Uri) {
         try {
             contentResolver.openFileDescriptor(uri, "w")?.use {
@@ -175,10 +214,9 @@ class MainActivity : AppCompatActivity() {
         var imageUri: Uri? = null
         if ((Intent.ACTION_SEND == action || Intent.ACTION_VIEW == action) && type != null) {
             if ("application/pdf" == type) {
-                if (Intent.ACTION_SEND == action)
-                    imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM)
-                else if (Intent.ACTION_VIEW == action)
-                    imageUri = intent.data
+                if (Intent.ACTION_SEND == action) imageUri =
+                    intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                else if (Intent.ACTION_VIEW == action) imageUri = intent.data
                 if (imageUri != null) {
                     val list = ArrayList<Uri>()
                     list.add(imageUri)
