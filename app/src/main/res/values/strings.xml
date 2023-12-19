@@ -21,6 +21,9 @@
     <string name="display_name">eSign</string>
     <string name="new_e_sign">Create eSign</string>
     <string name="my_e_sign">My eSign</string>
+    <string name="create_pin">Create PIN</string>
+    <string name="delete_pin">Delete PIN</string>
+    <string name="pin">PIN Settings</string>
     <string name="new_docs">Import new document</string>
     <string name="feed">Feed</string>
     <string name="search">Search</string>
@@ -33,10 +36,15 @@
     <string name="phone">Phone</string>
     <string name="empty_sign">No Signatures Available \nTap to create!</string>
     <string name="empty_docs">No Document Available!</string>
-
     <string name="open_file">Open file</string>
     <string name="share">Share</string>
     <string name="rename">Rename</string>
+    <string name="verify">Verify</string>
     <string name="save_to">Save to</string>
     <string name="pass">Certificate Password</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="new_pin">New PIN</string>
+    <string name="old_pin">Old PIN</string>
+    <string name="confirm_pin">Confirm PIN</string>
+    <string name="error_pin">ERROR: PIN wrong or do not match!</string>
 </resources>

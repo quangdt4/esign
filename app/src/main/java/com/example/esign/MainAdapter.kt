@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.esign.pki.SaveAsPDFWithCoroutine
+import com.example.esign.pki.SaveAsPDFWithCoroutine.Companion.KEY
 import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -39,13 +41,15 @@ class MainAdapter(private val ctx: Context, var items: List<File>) :
         var brief: TextView
         var size: TextView
         var lyt_parent: View
+        var signed: ImageView
 
         init {
-            image = v.findViewById<ImageView>(R.id.fileImageView)
-            name = v.findViewById<TextView>(R.id.fileItemTextview)
-            brief = v.findViewById<TextView>(R.id.dateItemTimeTextView)
-            size = v.findViewById<TextView>(R.id.sizeItemTimeTextView)
-            lyt_parent = v.findViewById<View>(R.id.listItemLinearLayout)
+            image = v.findViewById(R.id.fileImageView)
+            name = v.findViewById(R.id.fileItemTextview)
+            brief = v.findViewById(R.id.dateItemTimeTextView)
+            size = v.findViewById(R.id.sizeItemTimeTextView)
+            lyt_parent = v.findViewById(R.id.listItemLinearLayout)
+            signed = v.findViewById(R.id.ivSigned)
         }
     }
 
@@ -81,6 +85,9 @@ class MainAdapter(private val ctx: Context, var items: List<File>) :
             })
             toggleCheckedIcon(holder, position)
             view.image.setImageResource(R.drawable.ic_adobe)
+            if (!obj.canWrite()) {
+                view.signed.visibility = View.VISIBLE
+            }
         }
     }
 

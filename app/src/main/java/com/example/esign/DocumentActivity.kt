@@ -37,7 +37,10 @@ import com.example.esign.pds.page.PDSViewPager
 import com.example.esign.pki.SaveAsPDFWithCoroutine
 import com.example.esign.pki.VerificationAuthorityUtil.verifySignature
 import com.example.esign.signature.SignatureActivity
+import com.example.esign.utils.CommonUtils.getWrite
+import com.example.esign.utils.CommonUtils.setWrite
 import com.example.esign.utils.CommonUtils.showToast
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -92,8 +95,12 @@ class DocumentActivity : AppCompatActivity() {
         mViewPager = findViewById(R.id.viewpager)
         savingProgress = findViewById(R.id.savingProgress)
 
-//        val ab: ActionBar = supportActionBar!!
-//        ab.setDisplayHomeAsUpEnabled(true)
+        val fabVerify: ExtendedFloatingActionButton = findViewById(R.id.fabVerify)
+        fabVerify.setOnClickListener {
+            verify()
+        }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val message: String? = intent.getStringExtra(ACTION)
 
@@ -128,7 +135,6 @@ class DocumentActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_sign -> showSignatureOptionsDialog()
             R.id.action_save -> savePDFDocument()
-            R.id.action_verify -> verify()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -139,7 +145,7 @@ class DocumentActivity : AppCompatActivity() {
                 if (verify && cert != null) {
                     showVerifyDialog(cert)
                 } else {
-                    showToast("Verify fail!", this)
+                    showVerifyFailDialog()
                 }
             })
         } else if (newPdfData != null) {
@@ -147,7 +153,7 @@ class DocumentActivity : AppCompatActivity() {
                 if (verify && cert != null) {
                     showVerifyDialog(cert)
                 } else {
-                    showToast("Verify fail!", this)
+                    showVerifyFailDialog()
                 }
             })
         }
@@ -155,7 +161,7 @@ class DocumentActivity : AppCompatActivity() {
 
     private fun showVerifyDialog(cer: X509Certificate) {
         val alertDialog = AlertDialog.Builder(this).create()
-        alertDialog.setTitle("Verify signature")
+        alertDialog.setTitle("Verify success")
         alertDialog.setCancelable(true)
         alertDialog.setButton(
             AlertDialog.BUTTON_NEUTRAL, "Close"
@@ -163,13 +169,28 @@ class DocumentActivity : AppCompatActivity() {
             dialog.dismiss()
         }
         alertDialog.setMessage(
-            "Serial Number: ${cer.serialNumber}\n" + "IssuerDN: ${cer.issuerDN}]\n" + "Signature: ${cer.signature}"
+            "- Serial Number: ${cer.serialNumber}\n\n" + "- Certificate:\n ${cer.issuerDN}]"
         )
 
         alertDialog.show()
     }
 
+    private fun showVerifyFailDialog() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Verify fail")
+        alertDialog.setCancelable(true)
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEUTRAL, "Close"
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.setMessage("Your signature has been overwritten or changed. Please check again!")
+
+        alertDialog.show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
+        setWrite(true)
         onBackPressed()
         return true
     }
@@ -179,6 +200,7 @@ class DocumentActivity : AppCompatActivity() {
         if (isSigned) {
             showSaveChangesDialog()
         } else {
+            setWrite(true)
             finish()
         }
     }
@@ -370,6 +392,10 @@ class DocumentActivity : AppCompatActivity() {
     }
 
     private fun showSignatureOptionsDialog() {
+        if (getWrite() == false) {
+            showExistsSignDialog()
+            return
+        }
         val dialogBuilder = AlertDialog.Builder(this)
         val inflater: LayoutInflater = layoutInflater
         val dialogView: View = inflater.inflate(R.layout.optiondialog, null)
@@ -396,6 +422,20 @@ class DocumentActivity : AppCompatActivity() {
 
         signatureOptionDialog = dialogBuilder.create()
         signatureOptionDialog?.show()
+    }
+
+    private fun showExistsSignDialog() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Exists signature")
+        alertDialog.setCancelable(true)
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEUTRAL, "Close"
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.setMessage("Signature already exists. Cannot sign")
+
+        alertDialog.show()
     }
 
     /**
