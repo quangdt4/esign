@@ -10,6 +10,8 @@ object CommonUtils {
     private const val E_SIGN_PREF = "E_SIGN_PREF"
     private const val PIN = "PIN"
 
+    private var write: Boolean? = true
+
     fun showToast(text: String, context: Context) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
@@ -28,4 +30,10 @@ object CommonUtils {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(E_SIGN_PREF, Context.MODE_PRIVATE)
         return sharedPreferences.getString(PIN, "") ?: ""
     }
+
+    fun setWrite(canWrite: Boolean) {
+        write = canWrite
+    }
+
+    fun getWrite() = write
 }

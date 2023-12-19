@@ -32,6 +32,10 @@ import kotlinx.coroutines.withContext
 
 class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val fileName: String) {
 
+    companion object {
+        const val KEY = "[Signed] "
+    }
+
     private var signer: PdfStamper? = null
     private var mResult: Boolean = false
 
@@ -58,7 +62,7 @@ class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val
 
                             processSignature(
                                 activity, os, reader,
-                                mediaBox, bounds, signImage, i, j
+                                mediaBox, bounds, signImage, i, j, file
                             )
                         }
                     }
@@ -95,12 +99,13 @@ class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val
         bounds: RectF,
         signImage: Image,
         i: Int,
-        j: Int
+        j: Int,
+        file: File
     ) {
         if (activity.alias != null || activity.keyStore != null ||
             activity.mDigitalIDPassword != null
         ) {
-            Log.w("quangdo", "======== process Signature ======== \n \n", )
+            Log.w("quangdo", "======== process Signature ======== \n \n")
 
             val keyStore: KeyStore = activity.keyStore!!
             val alias: String = activity.alias!!
@@ -142,6 +147,7 @@ class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val
                 0,
                 MakeSignature.CryptoStandard.CADES
             )
+            renameFile(file)
         } else {
             signer = PdfStamper(reader, os, '\u0000')
             val contentByte: PdfContentByte = signer!!.getOverContent(i + 1)
@@ -183,6 +189,14 @@ class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val
         val root = activity.filesDir
         val myDir = File("$root/DigitalSignature").apply { mkdirs() }
         return File(myDir, fileName).apply { delete() }
+    }
+
+    private fun renameFile(file: File) {
+        val root = activity.filesDir
+        val myDir = File("$root/DigitalSignature").apply { mkdirs() }
+        val signedFileName = "$KEY$fileName"
+        file.setWritable(false)
+        file.renameTo(File(myDir, signedFileName))
     }
 
     private fun getBitmapFromElementType(element: PDSElement?): Bitmap? {

@@ -31,6 +31,7 @@ import com.example.esign.pin.PINActivity
 import com.example.esign.signature.SignatureActivity
 import com.example.esign.utils.CommonUtils.getPIN
 import com.example.esign.utils.CommonUtils.isPinSetup
+import com.example.esign.utils.CommonUtils.setWrite
 import com.example.esign.utils.CommonUtils.showToast
 import com.example.esign.utils.RecyclerViewEmptySupport
 import com.github.clans.fab.FloatingActionButton
@@ -220,13 +221,13 @@ class MainActivity : AppCompatActivity() {
                 if (imageUri != null) {
                     val list = ArrayList<Uri>()
                     list.add(imageUri)
-                    startSignatureActivity(list)
+                    startDocumentActivity(list)
                 }
             }
         }
     }
 
-    private fun startSignatureActivity(imageUris: ArrayList<Uri>?) {
+    private fun startDocumentActivity(imageUris: ArrayList<Uri>?) {
         val intent = Intent(applicationContext, DocumentActivity::class.java)
         intent.putExtra("ActivityAction", "PDFOpen")
         intent.putExtra("PDFOpen", imageUris)
@@ -355,6 +356,7 @@ class MainActivity : AppCompatActivity() {
         target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         val intent = Intent.createChooser(target, "Open File")
         try {
+            setWrite(currentFile.canWrite())
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             showToast("Open file fail", this)
