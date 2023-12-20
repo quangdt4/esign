@@ -20,85 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/d_16"
-        android:layout_marginBottom="@dimen/d_8"
+        android:layout_marginBottom="@dimen/d_16"
         android:text="Graduation project"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white" />
-
-    <TextView
-        style="@style/Text20Bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/d_16"
-        android:layout_marginBottom="@dimen/d_16"
-        android:text="e-Signature"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/white" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_16"
-        android:paddingBottom="@dimen/d_8"
-        android:text="Instructors: Mr.Dinh Truong Duy" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_8"
-        android:paddingBottom="@dimen/d_8"
-        android:text="Author: Do Thanh Quang" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_8"
-        android:paddingBottom="@dimen/d_8"
-        android:text="No: 70DCTT21112" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_8"
-        android:paddingBottom="@dimen/d_8"
-        android:text="Class: 70DCTT22" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_8"
-        android:paddingBottom="@dimen/d_8"
-        android:text="Created on: 11/2023" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Text16B"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingStart="@dimen/d_16"
-        android:paddingEnd="@dimen/d_0"
-        android:paddingTop="@dimen/d_8"
-        android:paddingBottom="@dimen/d_8"
-        android:text="Copyright (c) {2023} UTT" />
 
 </LinearLayout>

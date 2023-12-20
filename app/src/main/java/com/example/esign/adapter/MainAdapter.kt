@@ -1,4 +1,4 @@
-package com.example.esign
+package com.example.esign.adapter
 
 import android.content.Context
 import android.graphics.Color
@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.esign.R
 import com.example.esign.pki.SaveAsPDFWithCoroutine
-import com.example.esign.pki.SaveAsPDFWithCoroutine.Companion.KEY
 import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -85,7 +85,7 @@ class MainAdapter(private val ctx: Context, var items: List<File>) :
             })
             toggleCheckedIcon(holder, position)
             view.image.setImageResource(R.drawable.ic_adobe)
-            if (!obj.canWrite()) {
+            if (obj.name.startsWith(SaveAsPDFWithCoroutine.KEY, 0)) {
                 view.signed.visibility = View.VISIBLE
             }
         }

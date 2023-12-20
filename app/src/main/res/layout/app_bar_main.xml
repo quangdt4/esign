@@ -37,17 +37,6 @@
         app:menu_labels_position="left">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fabPIN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/d_16"
-            android:src="@drawable/ic_password"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/paleGrey"
-            app:fab_colorRipple="@color/white_ripple"
-            app:fab_label="@string/pin" />
-
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabMySign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

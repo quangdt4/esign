@@ -1,14 +1,12 @@
-package com.example.esign.pin
+package com.example.esign
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.example.esign.utils.CommonUtils.setPIN
 import androidx.appcompat.app.AppCompatActivity
-import com.example.esign.R
 import com.example.esign.utils.CommonUtils.getPIN
 import com.example.esign.utils.CommonUtils.isPinSetup
 import com.example.esign.utils.CommonUtils.showToast
