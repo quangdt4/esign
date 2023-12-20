@@ -33,6 +33,7 @@
     <string name="full_name">Full name</string>
     <string name="new_name">New name</string>
     <string name="delete">Delete</string>
+    <string name="bin">Recycle Bin</string>
     <string name="phone">Phone</string>
     <string name="empty_sign">No Signatures Available \nTap to create!</string>
     <string name="empty_docs">No Document Available!</string>

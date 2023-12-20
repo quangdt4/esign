@@ -27,16 +27,17 @@ import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.esign.pin.PINActivity
+import com.example.esign.adapter.MainAdapter
+import com.example.esign.pki.SaveAsPDFWithCoroutine.Companion.KEY
 import com.example.esign.signature.SignatureActivity
 import com.example.esign.utils.CommonUtils.getPIN
 import com.example.esign.utils.CommonUtils.isPinSetup
-import com.example.esign.utils.CommonUtils.setWrite
 import com.example.esign.utils.CommonUtils.showToast
 import com.example.esign.utils.RecyclerViewEmptySupport
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import java.io.File
@@ -84,6 +85,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val startRecycleBinForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (result != null) {
+                Log.i("quangdo", "data = ${result.data} ")
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -108,8 +119,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val fabDocs = findViewById<FloatingActionButton>(R.id.fabDocs)
         val fabMySign = findViewById<FloatingActionButton>(R.id.fabMySign)
-        val fabPIN = findViewById<FloatingActionButton>(R.id.fabPIN)
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val nav = findViewById<NavigationView>(R.id.nav_view)
         drawer.closeDrawer(GravityCompat.START)
 
         fabMenu = findViewById(R.id.fabMenu)
@@ -131,10 +142,23 @@ class MainActivity : AppCompatActivity() {
             mHandler.postDelayed(signatureIntentRunnable, 100)
         }
 
-        fabPIN.setOnClickListener {
-            val intent = Intent(applicationContext, PINActivity::class.java)
-            startActivity(intent)
+        nav.setNavigationItemSelectedListener { item ->
+            item.groupId
+            when (item.itemId) {
+                R.id.fabPIN -> {
+                    val intent = Intent(applicationContext, PINActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.fabBin -> {
+                    val intent = Intent(applicationContext, RecycleBinActivity::class.java)
+                    startRecycleBinForResult.launch(intent)
+                }
+            }
+            drawer.closeDrawer(GravityCompat.START)
+            true
         }
+
 
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
@@ -356,7 +380,6 @@ class MainActivity : AppCompatActivity() {
         target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         val intent = Intent.createChooser(target, "Open File")
         try {
-            setWrite(currentFile.canWrite())
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             showToast("Open file fail", this)
@@ -393,15 +416,17 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
         val view = inflater.inflate(R.layout.rename_layout, null)
-        builder.setView(view)
         val editText = view.findViewById<View>(R.id.renameEditText2) as EditText
         editText.setText(currentFile.name)
+        builder.setView(view)
         builder.setTitle("Rename")
         builder.setPositiveButton(
             "Rename"
         ) { dialog, _ ->
             val root = filesDir
-            val file = File("$root/DigitalSignature", editText.text.toString())
+            val file = File("$root/DigitalSignature", checkAvailableName(
+                old = currentFile.name,
+                new = editText.text.toString()))
             currentFile.renameTo(file)
             dialog.dismiss()
             createDataSource()
@@ -414,18 +439,36 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun checkAvailableName(old: String, new: String): String {
+        return if (old.startsWith(KEY, 0)) {
+            if (new.startsWith(KEY, 0)) {
+                return new
+            } else {
+                return "$KEY$new"
+            }
+        } else {
+            new
+        }
+    }
+
     private fun showCustomDeleteDialog(currentFile: File) {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Are you sure want to delete this file?")
-        builder.setPositiveButton("OK") { _, _ ->
+        try {
+            val root = filesDir
+            val destinationDir = File("$root/DigitalSignatureBin").apply { mkdirs() }
+            val destinationFile = File(destinationDir, currentFile.name)
+            if (destinationFile.exists()) {
+                val timestamp = System.currentTimeMillis()
+                destinationFile.renameTo(File(destinationDir, "${currentFile.name}_$timestamp"))
+            }
+
+            currentFile.copyTo(destinationFile)
             currentFile.delete()
             createDataSource()
             mAdapter!!.notifyItemInserted(items!!.size - 1)
+
+            showToast("Your file is moved to the recycle bin", this)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        builder.setNegativeButton(
-            "Cancel"
-        ) { _, _ -> }
-        val dialog = builder.create()
-        dialog.show()
     }
 }

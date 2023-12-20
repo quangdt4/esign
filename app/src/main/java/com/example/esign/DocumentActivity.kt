@@ -37,8 +37,6 @@ import com.example.esign.pds.page.PDSViewPager
 import com.example.esign.pki.SaveAsPDFWithCoroutine
 import com.example.esign.pki.VerificationAuthorityUtil.verifySignature
 import com.example.esign.signature.SignatureActivity
-import com.example.esign.utils.CommonUtils.getWrite
-import com.example.esign.utils.CommonUtils.setWrite
 import com.example.esign.utils.CommonUtils.showToast
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import java.io.File
@@ -190,7 +188,6 @@ class DocumentActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        setWrite(true)
         onBackPressed()
         return true
     }
@@ -200,7 +197,6 @@ class DocumentActivity : AppCompatActivity() {
         if (isSigned) {
             showSaveChangesDialog()
         } else {
-            setWrite(true)
             finish()
         }
     }
@@ -392,10 +388,6 @@ class DocumentActivity : AppCompatActivity() {
     }
 
     private fun showSignatureOptionsDialog() {
-        if (getWrite() == false) {
-            showExistsSignDialog()
-            return
-        }
         val dialogBuilder = AlertDialog.Builder(this)
         val inflater: LayoutInflater = layoutInflater
         val dialogView: View = inflater.inflate(R.layout.optiondialog, null)

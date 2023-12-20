@@ -195,7 +195,6 @@ class SaveAsPDFWithCoroutine(private val activity: DocumentActivity, private val
         val root = activity.filesDir
         val myDir = File("$root/DigitalSignature").apply { mkdirs() }
         val signedFileName = "$KEY$fileName"
-        file.setWritable(false)
         file.renameTo(File(myDir, signedFileName))
     }
 

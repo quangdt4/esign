@@ -14,8 +14,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:focusable="true"
-        app:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        app:tint="@android:color/white" />
 
     <LinearLayout
         android:id="@+id/toDoEmptyView"
@@ -37,7 +37,9 @@
                 android:gravity="center"
                 android:paddingTop="4dp"
                 android:paddingBottom="8dp"
-                android:text="No Signatures Available" />
+                android:text="No Signatures Available"
+                android:textColor="@color/grey_10"
+                android:textSize="20sp" />
 
             <TextView
                 style="@style/Text12B"
@@ -46,7 +48,9 @@
                 android:gravity="center"
                 android:paddingTop="4dp"
                 android:paddingBottom="8dp"
-                android:text="Create a new Signature" />
+                android:text="Create a new Signature"
+                android:textColor="@color/grey_10"
+                android:textSize="15sp" />
 
         </LinearLayout>
     </LinearLayout>
